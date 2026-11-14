@@ -1,0 +1,20 @@
+name: Publish APK
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reassemble and verify
+        run: |
+          cat parts/part1 parts/part2 parts/part3 > EitanShield-1.0.0.apk
+          echo "$(cat parts/SHA256)  EitanShield-1.0.0.apk" | sha256sum -c -
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-${{ github.run_number }}
+          name: Eitan Shield 1.0.0
+          files: EitanShield-1.0.0.apk
